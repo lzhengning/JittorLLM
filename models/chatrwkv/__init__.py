@@ -3,26 +3,32 @@ import os
 jt.flags.use_cuda = 1
 
 from models import LLMModel
-
-
+from rwkv.model import RWKV
+from rwkv.utils import PIPELINE, PIPELINE_ARGS
 
 class ChatRWKVMdoel(LLMModel):
     def __init__(self, args) -> None:
         super().__init__()
 
         ckpt_dir = getattr(args, "ckpt_dir", "data/llama/7B")
-        tokenizer_path = getattr(args, "tokenizer_path", "data/llama/tokenizer.model")
-
-        self.generator = load(
-            ckpt_dir, tokenizer_path, max_seq_len=512, max_batch_size=32
-        )
+        tokenizer_path = getattr(args, "tokenizer_path", os.path.join(os.path.dirname(os.path.realpath(__file__)), "20B_tokenizer.json"))
+        print(ckpt_dir)
+        model = RWKV(model=ckpt_dir, strategy='cpu fp32')
+        self.generator = PIPELINE(model, tokenizer_path) # 20B_tokenizer.json is in https://github.com/BlinkDL/ChatRWKV
+        
+        self.args = PIPELINE_ARGS(temperature = 1.0, top_p = 0.7, top_k = 100,
+                            alpha_frequency = 0.25,
+                            alpha_presence = 0.25,
+                            token_ban = [0], # ban the generation of some tokens
+                            token_stop = []) # stop generation whenever you see any token here
         jt.gc()
 
     def run(self, input_text: str) -> str:
-        output = self.generator.generate([input_text], max_gen_len=256, temperature=0.8, top_p=0.95)
+        def print_output(s):
+            print(s, end='', flush=True)
+        output = self.generator.generate(input_text, token_count=200, args=self.args, callback=print_output)
         return output
 
-
 def get_model(args):
-    args.ckpt_dir = os.path.join(jt.compiler.ck_path, "chatrwkv")
+    args.ckpt_dir = args.paths
     return ChatRWKVMdoel(args)

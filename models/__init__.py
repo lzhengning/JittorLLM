@@ -27,7 +27,7 @@ class LLMModel:
 def get_model(args) -> LLMModel:
     model_name = args.model
     assert model_name in availabel_models
-    globals()[f"get_{model_name}"]()
+    args.paths = globals()[f"get_{model_name}"]()
     try:
         module = importlib.import_module(f"models.{model_name}")
         return module.get_model(args)
