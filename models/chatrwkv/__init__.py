@@ -9,8 +9,6 @@ from rwkv.utils import PIPELINE, PIPELINE_ARGS
 class ChatRWKVMdoel(LLMModel):
     def __init__(self, args) -> None:
         super().__init__()
-
-        ckpt_dir = getattr(args, "ckpt_dir", "data/llama/7B")
         tokenizer_path = getattr(args, "tokenizer_path", os.path.join(os.path.dirname(os.path.realpath(__file__)), "20B_tokenizer.json"))
         print(ckpt_dir)
         model = RWKV(model=ckpt_dir, strategy='cpu fp32')
