@@ -10,7 +10,7 @@ class ChatRWKVMdoel(LLMModel):
     def __init__(self, args) -> None:
         super().__init__()
         tokenizer_path = getattr(args, "tokenizer_path", os.path.join(os.path.dirname(os.path.realpath(__file__)), "20B_tokenizer.json"))
-        model = RWKV(model=ckpt_dir, strategy='cpu fp32')
+        model = RWKV(model=args.ckpt_dir, strategy='cuda fp16')
         self.generator = PIPELINE(model, tokenizer_path) # 20B_tokenizer.json is in https://github.com/BlinkDL/ChatRWKV
         
         self.args = PIPELINE_ARGS(temperature = 1.0, top_p = 0.7, top_k = 100,

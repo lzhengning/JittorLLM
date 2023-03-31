@@ -15,7 +15,7 @@ def download_fromhub(path, tdir=""):
         return fname
 
 def get_chatrwkv():
-    return download_fromhub("jittorhub://RWKV-4-Pile-169M-20220807-8023-fp32.pth", tdir="ChatRWKV")
+    return download_fromhub("jittorhub://RWKV-4-Pile-3B-EngChn-test4-20230115-fp32.pth", tdir="ChatRWKV")
 
 def get_llama():
     llama_file_list = [
