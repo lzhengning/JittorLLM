@@ -1,2 +1,2 @@
-torch==1.13.1
+jittor
 tokenizers>=0.13.2

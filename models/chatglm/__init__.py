@@ -9,9 +9,14 @@ class ChatGLMMdoel(LLMModel):
         self.model = AutoModel.from_pretrained(os.path.dirname(__file__), trust_remote_code=True).half().cuda()
         self.model = self.model.eval()
 
-    def run(self, input_text: str) -> str:
-        response, history = self.model.chat(self.tokenizer, input_text, history=[])
-        return response
+    def chat(self) -> str:
+        history = []
+        while True:
+            text = input("用户输入:")
+            response, history = self.model.chat(self.tokenizer, text, history=history)
+            print("Chat-GLM: ", end='')
+            print(response)
+            print("")
 
 def get_model(args):
     return ChatGLMMdoel(args)
