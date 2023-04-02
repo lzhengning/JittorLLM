@@ -2,23 +2,24 @@ import argparse
 import models
 import gradio as gr
 
+MAX_TURNS = 20
+MAX_BOXES = MAX_TURNS * 2
+
 def predict(input, history=None):
-    global model
+    global model, args
     if history is None:
         history = []
     for response, history in model.run_web_demo(input, history):
         updates = []
         for query, response in history:
             updates.append(gr.update(visible=True, value="用户：" + query))
-            updates.append(gr.update(visible=True, value="ChatGLM：" + response))
+            updates.append(gr.update(visible=True, value=f"{args.model}：" + response))
         if len(updates) < MAX_BOXES:
             updates = updates + [gr.Textbox.update(visible=False)] * (MAX_BOXES - len(updates))
         yield [history] + updates
 
 
 if __name__ == "__main__":
-    MAX_TURNS = 20
-    MAX_BOXES = MAX_TURNS * 2
     parser = argparse.ArgumentParser()
     parser.add_argument("model", choices=models.availabel_models)
     args = parser.parse_args()

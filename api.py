@@ -27,7 +27,12 @@ async def create_item(request: Request):
     # max_length = json_post_list.get('max_length')
     # top_p = json_post_list.get('top_p')
     # temperature = json_post_list.get('temperature')
-    response, history = model.run(prompt)
+    output = model.run(prompt)
+    if isinstance(output, tuple):
+        response, history = output
+    else:
+        response = output
+        history = []
     now = datetime.datetime.now()
     time = now.strftime("%Y-%m-%d %H:%M:%S")
     answer = {
