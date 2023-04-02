@@ -88,7 +88,7 @@ def generate(model, context_tokens, args, tokenizer, max_num=50, begin=0):
         if p_args[target_index] == tokenizer.eod or \
                 valid_length == args.seq_length-1 or cnt>=max_num:
             outputs = tokens.cpu().numpy()
-            return
+            return text_out
 
         if (begin > 0) and (valid_length >= begin):
             #print(p_args[target_index])
